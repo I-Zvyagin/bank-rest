@@ -1,10 +1,7 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,17 +31,16 @@ public class UserEntity implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    @JoinColumn(name = "role_id")
-    private RoleEntity role;
+    private RoleName role;
 
     @OneToMany(mappedBy = "user")
     private List<CardEntity> cards;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getRoleName()));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
