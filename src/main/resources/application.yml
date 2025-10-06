@@ -8,7 +8,7 @@
   - Включить Swagger UI.
 
 server:
-  port: 8080
+  port: 9090
 
 spring:
   datasource:
@@ -18,5 +18,11 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     generate-ddl: true
+  liquibase:
+    change-log: classpath:/db/migration/changelog.yml
+
+token:
+  signing:
+    key: KJIS8H5HG73MGJHD8R94JG0W0JPSEO48HBDY4F330IGN4

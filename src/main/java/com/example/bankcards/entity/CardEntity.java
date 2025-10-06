@@ -39,7 +39,7 @@ public class CardEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_status", nullable = false)
-    private String cardStatus;
+    private CardStatus cardStatus;
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
