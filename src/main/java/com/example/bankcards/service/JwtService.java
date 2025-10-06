@@ -1,4 +1,4 @@
-package com.example.bankcards.repository;
+package com.example.bankcards.service;
 
 import com.example.bankcards.entity.UserEntity;
 import io.jsonwebtoken.Claims;
