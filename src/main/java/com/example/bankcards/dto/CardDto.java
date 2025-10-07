@@ -11,11 +11,17 @@ import java.util.Date;
 @Getter
 @Setter
 public class CardDto {
+
     private long id;
+
     private String cardNumber;
+
     private String maskedCardNumber;
+
     private BigDecimal balance;
+
     private CardStatus cardStatus;
+
     private Date expirationDate;
 
     public CardDto(long id, String cardNumber, BigDecimal balance, CardStatus cardStatus, Date expirationDate) {
