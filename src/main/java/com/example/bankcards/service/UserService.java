@@ -9,4 +9,6 @@ public interface UserService {
     UserEntity createUser(UserEntity user);
 
     UserDetailsService userDetailsService();
+
+    void getAdmin();
 }
