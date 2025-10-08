@@ -1,14 +1,18 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
-    UserEntity saveUser(UserEntity user);
+import java.util.List;
 
-    UserEntity createUser(UserEntity user);
+public interface UserService {
+    UserDto saveUser(UserDto user);
+
+    UserDto createUser(UserDto user);
 
     UserDetailsService userDetailsService();
 
     void getAdmin();
+
+    List<UserDto> getAllUsers();
 }

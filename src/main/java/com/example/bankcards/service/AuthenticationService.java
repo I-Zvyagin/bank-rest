@@ -5,6 +5,7 @@ import com.example.bankcards.dto.SignInRequest;
 import com.example.bankcards.dto.SignUpRequest;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.util.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +32,7 @@ public class AuthenticationService {
                 .role(RoleName.USER)
                 .build();
 
-        userService.createUser(user);
+        userService.createUser(UserMapper.toDto(user));
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

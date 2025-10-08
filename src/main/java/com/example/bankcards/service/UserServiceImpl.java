@@ -1,27 +1,34 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.repository.UserRepository;
+import com.example.bankcards.util.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
     @Override
-    public UserEntity saveUser(UserEntity user){
-        return userRepository.save(user);
+    public UserDto saveUser(UserDto user){
+        UserEntity userRequestingSave = UserMapper.toEntity(user);
+        UserEntity savedUser = userRepository.save(userRequestingSave);
+        return UserMapper.toDto(savedUser);
     }
 
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public UserDto createUser(UserDto user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Пользователь с таким именем уже существует!");
         }
@@ -33,26 +40,36 @@ public class UserServiceImpl implements UserService{
         return saveUser(user);
     }
 
-    public UserEntity getByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public UserDto getByUsername(String username) {
+        UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Пользователь с таким именем не найден!"));
+        return UserMapper.toDto(userEntity);
     }
 
     //Получение пользователя по имени для Spring Security
+    @Override
     public UserDetailsService userDetailsService() {
-        return this::getByUsername;
+        return username -> UserMapper.toEntity(this.getByUsername(username));
     }
 
     //Получение текущего пользователя
-    public UserEntity getCurrentUser() {
+    public UserDto getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
     }
 
     @Deprecated
+    @Override
     public void getAdmin() {
-        UserEntity user = getCurrentUser();
+        UserDto user = getCurrentUser();
         user.setRole(RoleName.ADMIN);
         saveUser(user);
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

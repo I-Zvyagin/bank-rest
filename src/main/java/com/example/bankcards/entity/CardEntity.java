@@ -23,7 +23,7 @@ public class CardEntity {
     @Column (name = "card_id")
     private long id;
 
-    @Column(name = "card_number", nullable = false)
+    @Column(name = "card_number", nullable = false, unique = true)
     @Size(min = 16, max = 16)
     private String cardNumber;
 
