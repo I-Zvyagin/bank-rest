@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping
+    @PutMapping("/{id}/role")
     @Operation(description = "Меняет роль пользователя")
     public ResponseEntity<UserDto> changeUserRole(@PathVariable  Long id, @RequestParam RoleName role) {
         UserEntity user = userService.getAllUsers().stream()
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Operation(description = "Удаляет пользователя")
     public ResponseEntity<String> deleteUser(@PathVariable  Long id) {
         List<UserEntity> users = userService.getAllUsers();
