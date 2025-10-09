@@ -15,6 +15,8 @@ public interface UserService {
 
     void getAdmin();
 
+    UserEntity getCurrentUser();
+
     List<UserEntity> getAllUsers();
 
     void deleteUser(Long id);

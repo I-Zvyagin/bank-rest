@@ -10,11 +10,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -32,5 +33,48 @@ public class UserController {
         user.setRole(RoleName.USER);
         UserEntity createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(createdUser));
+    }
+
+    @GetMapping("/me")
+    @Operation(description = "Возвращает текущего пользователя")
+    public ResponseEntity<UserDto> getCurrentUser() {
+        UserEntity currentUser = userService.getCurrentUser();
+        return ResponseEntity.ok(UserMapper.toDto(currentUser));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @Operation(description = "Возвращает список всех пользователей")
+    public ResponseEntity<List<UserDto>> getAllUser() {
+        List<UserDto> users = userService.getAllUsers().stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(users);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping
+    @Operation(description = "Меняет роль пользователя")
+    public ResponseEntity<UserDto> changeUserRole(@PathVariable  Long id, @RequestParam RoleName role) {
+        UserEntity user = userService.getAllUsers().stream()
+                .filter(userEntity -> userEntity.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден!"));
+        user.setRole(role);
+        UserEntity newRoleUser = userService.saveUser(user);
+        return  ResponseEntity.ok(UserMapper.toDto(newRoleUser));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    @Operation(description = "Удаляет пользователя")
+    public ResponseEntity<String> deleteUser(@PathVariable  Long id) {
+        List<UserEntity> users = userService.getAllUsers();
+        boolean exists = users.stream().anyMatch(u -> u.getId() == id);
+        if (!exists) {
+            return ResponseEntity.badRequest().body("Пользователь не найден!");
+        } else {
+            return ResponseEntity.ok("Пользователь удалён!");
+        }
     }
 }
