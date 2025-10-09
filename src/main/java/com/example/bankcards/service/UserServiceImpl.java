@@ -21,14 +21,12 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     @Override
-    public UserDto saveUser(UserDto user){
-        UserEntity userRequestingSave = UserMapper.toEntity(user);
-        UserEntity savedUser = userRepository.save(userRequestingSave);
-        return UserMapper.toDto(savedUser);
+    public UserEntity saveUser(UserEntity user){
+        return userRepository.save(user);
     }
 
     @Override
-    public UserDto createUser(UserDto user) {
+    public UserEntity createUser(UserEntity user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Пользователь с таким именем уже существует!");
         }
@@ -40,20 +38,19 @@ public class UserServiceImpl implements UserService{
         return saveUser(user);
     }
 
-    public UserDto getByUsername(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username)
+    public UserEntity getByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Пользователь с таким именем не найден!"));
-        return UserMapper.toDto(userEntity);
     }
 
     //Получение пользователя по имени для Spring Security
     @Override
     public UserDetailsService userDetailsService() {
-        return username -> UserMapper.toEntity(this.getByUsername(username));
+        return this::getByUsername;
     }
 
     //Получение текущего пользователя
-    public UserDto getCurrentUser() {
+    public UserEntity getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
     }
@@ -61,15 +58,18 @@ public class UserServiceImpl implements UserService{
     @Deprecated
     @Override
     public void getAdmin() {
-        UserDto user = getCurrentUser();
+        UserEntity user = getCurrentUser();
         user.setRole(RoleName.ADMIN);
         saveUser(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void deleteUser (Long id) {
+        userRepository.deleteById(id);
     }
 }

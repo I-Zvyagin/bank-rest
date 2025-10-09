@@ -1,7 +1,10 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.UserDto;
+import com.example.bankcards.entity.RoleName;
+import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.service.UserService;
+import com.example.bankcards.util.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +27,10 @@ public class UserController {
     @PostMapping("/register")
     @Operation(description = "Регистрация нового пользователя")
     public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserDto userDto) {
-        UserDto registeredUser = userService.saveUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+        UserEntity user = UserMapper.toEntity(userDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(RoleName.USER);
+        UserEntity createdUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(createdUser));
     }
 }

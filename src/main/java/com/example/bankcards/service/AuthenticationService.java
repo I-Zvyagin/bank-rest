@@ -32,7 +32,7 @@ public class AuthenticationService {
                 .role(RoleName.USER)
                 .build();
 
-        userService.createUser(UserMapper.toDto(user));
+        userService.createUser(user);
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
