@@ -1,18 +1,16 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.repository.UserRepository;
-import com.example.bankcards.util.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -20,11 +18,11 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public UserEntity saveUser(UserEntity user){
         return userRepository.save(user);
     }
-
     @Override
     public UserEntity createUser(UserEntity user) {
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -68,6 +66,7 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+    @Transactional
     @Override
     public void deleteUser (Long id) {
         userRepository.deleteById(id);

@@ -31,7 +31,7 @@ public class CardEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @JoinColumn(name = "username", nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "expiration_date", nullable = false)
