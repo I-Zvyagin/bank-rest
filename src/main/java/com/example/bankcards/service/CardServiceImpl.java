@@ -5,17 +5,25 @@ import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.repository.CardRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class CardServiceImpl implements  CardService{
 
     private final CardRepository cardRepository;
+
+    public Optional<CardEntity> getCardById(Long id){
+        return cardRepository.findById(id);
+    }
 
     @Transactional
     @Override
@@ -46,9 +54,19 @@ public class CardServiceImpl implements  CardService{
                 .toList();
     }
 
+    @Override
+    public Page<CardEntity> getCardsForUser(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return cardRepository.findAllByUser_Id(userId, pageable);
+    }
+
     @Transactional
     @Override
     public void deleteCard(Long id) {
-        cardRepository.deleteById(id);
+        if(cardRepository.existsById(id)) {
+            cardRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Карта не найдена!");
+        }
     }
 }

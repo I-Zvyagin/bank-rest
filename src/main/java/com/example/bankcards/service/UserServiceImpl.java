@@ -1,5 +1,6 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.repository.UserRepository;
@@ -11,12 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+
+    public Optional<UserEntity> getUserById(Long id){
+        return userRepository.findById(id);
+    }
 
     @Transactional
     @Override
