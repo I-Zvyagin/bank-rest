@@ -12,11 +12,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,5 +85,27 @@ public class CardController {
         Page<CardEntity> cardsPage = cardService.getCardsForUser(currentUser.getId(), page, size);
         Page<CardDto> dtoPage = cardsPage.map(CardMapper::toDto);
         return ResponseEntity.ok(dtoPage);
+    }
+
+    @GetMapping("/cards")
+    public ResponseEntity<Page<CardDto>> getCards(
+            @RequestParam(required = false) String cardNumber,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,asc") String[] sort
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(parseSort(sort)));
+        Page<CardDto> cards = cardService.getCards(cardNumber, status, pageable);
+        return ResponseEntity.ok(cards);
+    }
+
+    private List<Sort.Order> parseSort(String[] sort) {
+        return Arrays.stream(sort)
+                .map(s -> {
+                    String[] split = s.split(",");
+                    return new Sort.Order(Sort.Direction.fromString(split[1]), split[0]);
+                })
+                .collect(Collectors.toList());
     }
 }

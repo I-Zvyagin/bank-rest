@@ -1,15 +1,18 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.exception.CardAlreadyExistsException;
 import com.example.bankcards.exception.CardNotFoundException;
 import com.example.bankcards.repository.CardRepository;
+import com.example.bankcards.util.CardMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +73,20 @@ public class CardServiceImpl implements  CardService{
         } else {
             cardRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public Page<CardDto> getCards(String cardNumber, String status, Pageable pageable) {
+        Specification<CardEntity> spec = Specification.where(null);
+
+        if (cardNumber != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("cardNumber"), "%" + cardNumber + "%"));
+        }
+        if (status != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
+        }
+
+        return cardRepository.findAll(spec, pageable)
+                .map(CardMapper::toDto);
     }
 }
