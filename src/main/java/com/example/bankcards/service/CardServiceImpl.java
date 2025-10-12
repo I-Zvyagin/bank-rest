@@ -2,6 +2,8 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
+import com.example.bankcards.exception.CardAlreadyExistsException;
+import com.example.bankcards.exception.CardNotFoundException;
 import com.example.bankcards.repository.CardRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,7 @@ public class CardServiceImpl implements  CardService{
     @Override
     public CardEntity saveCard(CardEntity card) {
         if(cardRepository.existsByCardNumber(card.getCardNumber())) {
-            throw  new RuntimeException("Карта с таким номером уже существует!");
+            throw new CardAlreadyExistsException(card.getCardNumber());
         } else {
             return cardRepository.save(card);
         }
@@ -63,10 +65,10 @@ public class CardServiceImpl implements  CardService{
     @Transactional
     @Override
     public void deleteCard(Long id) {
-        if(cardRepository.existsById(id)) {
-            cardRepository.deleteById(id);
+        if(!cardRepository.existsById(id)) {
+            throw new CardNotFoundException(id);
         } else {
-            throw new RuntimeException("Карта не найдена!");
+            cardRepository.deleteById(id);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.bankcards.controller;
 import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.service.UserService;
 import com.example.bankcards.util.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +60,7 @@ public class UserController {
         UserEntity user = userService.getAllUsers().stream()
                 .filter(userEntity -> userEntity.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден!"));
+                .orElseThrow(() -> new UserNotFoundException(id));
         user.setRole(role);
         UserEntity newRoleUser = userService.saveUser(user);
         return  ResponseEntity.ok(UserMapper.toDto(newRoleUser));
@@ -69,12 +70,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @Operation(description = "Удаляет пользователя")
     public ResponseEntity<String> deleteUser(@PathVariable  Long id) {
-        List<UserEntity> users = userService.getAllUsers();
-        boolean exists = users.stream().anyMatch(u -> u.getId() == id);
-        if (!exists) {
-            return ResponseEntity.badRequest().body("Пользователь не найден!");
-        } else {
-            return ResponseEntity.ok("Пользователь удалён!");
-        }
+        userService.deleteUser(id);
+        return ResponseEntity.ok("Пользователь удалён!");
     }
 }

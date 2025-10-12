@@ -3,6 +3,9 @@ package com.example.bankcards.service;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.EmailAlreadyExistsException;
+import com.example.bankcards.exception.UserAlreadyExistsException;
+import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +35,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserEntity createUser(UserEntity user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Пользователь с таким именем уже существует!");
+            throw new UserAlreadyExistsException(user.getUsername());
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует!");
+            throw new EmailAlreadyExistsException(user.getEmail());
         }
 
         return saveUser(user);
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService{
 
     public UserEntity getByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Пользователь с таким именем не найден!"));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     //Получение пользователя по имени для Spring Security
@@ -74,7 +77,10 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public void deleteUser (Long id) {
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
         userRepository.deleteById(id);
     }
 }

@@ -4,6 +4,7 @@ import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.CardNotFoundException;
 import com.example.bankcards.service.CardService;
 import com.example.bankcards.service.UserService;
 import com.example.bankcards.util.CardMapper;
@@ -56,7 +57,7 @@ public class CardController {
     @Operation(description = "Меняет статус карты")
     public ResponseEntity<CardDto> changeCardStatus(@PathVariable Long card_id, @RequestParam CardStatus status) {
         CardEntity card = cardService.getCardById(card_id)
-                .orElseThrow(() -> new RuntimeException("Карта не найдена!"));
+                .orElseThrow(() -> new CardNotFoundException(card_id));
         card.setCardStatus(status);
         CardEntity updatedCard = cardService.saveCard(card);
         return ResponseEntity.ok(CardMapper.toDto(updatedCard));
