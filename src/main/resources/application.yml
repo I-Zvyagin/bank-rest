@@ -14,7 +14,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost/bank-rest-database
     username: postgres
-    password: roottoor
+    password: 12345
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
