@@ -34,13 +34,13 @@ public class CardEntity {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "expiration_date", nullable = false)
-    private Date expirationDate;
+    @Column(name = "balance", nullable = false)
+    private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_status", nullable = false)
     private CardStatus cardStatus;
 
-    @Column(name = "balance", nullable = false)
-    private BigDecimal balance;
+    @Column(name = "expiration_date", nullable = false)
+    private Date expirationDate;
 }
