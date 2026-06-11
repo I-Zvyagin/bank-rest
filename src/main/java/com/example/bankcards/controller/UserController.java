@@ -56,20 +56,20 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/role")
     @Operation(description = "Меняет роль пользователя")
-    public ResponseEntity<UserDto> changeUserRole(@PathVariable  Long id, @RequestParam RoleName role) {
+    public ResponseEntity<UserDto> changeUserRole(@PathVariable Long id, @RequestParam RoleName role) {
         UserEntity user = userService.getAllUsers().stream()
                 .filter(userEntity -> userEntity.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(id));
         user.setRole(role);
         UserEntity newRoleUser = userService.saveUser(user);
-        return  ResponseEntity.ok(UserMapper.toDto(newRoleUser));
+        return ResponseEntity.ok(UserMapper.toDto(newRoleUser));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(description = "Удаляет пользователя")
-    public ResponseEntity<String> deleteUser(@PathVariable  Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("Пользователь удалён!");
     }

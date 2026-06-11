@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private  final AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-in")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid SignInRequest request) {

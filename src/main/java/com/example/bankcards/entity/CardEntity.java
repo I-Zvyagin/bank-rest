@@ -20,7 +20,7 @@ public class CardEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "card_id")
+    @Column(name = "card_id")
     private long id;
 
     @Column(name = "card_number", nullable = false, unique = true)

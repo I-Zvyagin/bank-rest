@@ -70,7 +70,7 @@ public class CardController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(description = "Удаляет карту")
-    public ResponseEntity<String> deleteCard(@PathVariable  Long id) {
+    public ResponseEntity<String> deleteCard(@PathVariable Long id) {
         cardService.deleteCard(id);
         return ResponseEntity.ok("Карта удалена");
     }

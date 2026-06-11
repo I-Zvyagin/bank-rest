@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface CardRepository extends JpaRepository <CardEntity, Long>, JpaSpecificationExecutor<CardEntity> {
+public interface CardRepository extends JpaRepository<CardEntity, Long>, JpaSpecificationExecutor<CardEntity> {
 
     Optional<CardEntity> findByCardNumber(String cardNumber);
 

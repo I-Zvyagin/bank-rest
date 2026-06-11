@@ -26,6 +26,6 @@ public class CardMapper {
         entity.setBalance(dto.getBalance());
         entity.setCardStatus(dto.getCardStatus());
         entity.setExpirationDate(dto.getExpirationDate());
-        return  entity;
+        return entity;
     }
 }

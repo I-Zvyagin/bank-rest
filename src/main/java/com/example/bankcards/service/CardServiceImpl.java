@@ -22,11 +22,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class CardServiceImpl implements  CardService{
+public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
 
-    public Optional<CardEntity> getCardById(Long id){
+    public Optional<CardEntity> getCardById(Long id) {
         return cardRepository.findById(id);
     }
 
@@ -40,7 +40,7 @@ public class CardServiceImpl implements  CardService{
 
     @Override
     public CardEntity saveCard(CardEntity card) {
-        if(cardRepository.existsByCardNumber(card.getCardNumber())) {
+        if (cardRepository.existsByCardNumber(card.getCardNumber())) {
             throw new CardAlreadyExistsException(card.getCardNumber());
         } else {
             return cardRepository.save(card);
@@ -68,7 +68,7 @@ public class CardServiceImpl implements  CardService{
     @Transactional
     @Override
     public void deleteCard(Long id) {
-        if(!cardRepository.existsById(id)) {
+        if (!cardRepository.existsById(id)) {
             throw new CardNotFoundException(id);
         } else {
             cardRepository.deleteById(id);

@@ -19,19 +19,20 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<UserEntity> getUserById(Long id){
+    public Optional<UserEntity> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
     @Transactional
     @Override
-    public UserEntity saveUser(UserEntity user){
+    public UserEntity saveUser(UserEntity user) {
         return userRepository.save(user);
     }
+
     @Override
     public UserEntity createUser(UserEntity user) {
         if (userRepository.existsByUsername(user.getUsername())) {
