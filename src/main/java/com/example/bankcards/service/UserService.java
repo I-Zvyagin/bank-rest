@@ -16,7 +16,7 @@ public interface UserService {
 
     UserDetailsService userDetailsService();
 
-    void getAdmin();
+    void getAdmin(Long id);
 
     UserEntity getCurrentUser();
 

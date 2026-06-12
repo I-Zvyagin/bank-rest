@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class CardNumberMaskTest {
-    private CardNumberMask cardNumberMask;
-
     @Test
     void shouldReturnCardMask() {
         String cardNumber = "1234567887654321";

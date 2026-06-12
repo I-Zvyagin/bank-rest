@@ -63,10 +63,10 @@ public class UserServiceImpl implements UserService {
         return getByUsername(username);
     }
 
-    @Deprecated
     @Override
-    public void getAdmin() {
-        UserEntity user = getCurrentUser();
+    public void getAdmin(Long id) {
+        UserEntity user = getUserById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
         user.setRole(RoleName.ADMIN);
         saveUser(user);
     }
